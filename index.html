@@ -8,20 +8,23 @@
     <title>ToDo List</title>
   </head>
   <body>
-    <div class="container">
-      <h1 class="heading">My Todo List</h1>
-      <p>
-        <label for="new-task">Add Item</label>
-        <input type="text" id="new-task" placeholder="Add item..." />
-        <button id="add-button">Add</button>
-      </p>
+    <header>
+      <h1>My ToDo List</h1>
+    </header>
+    <form>
+      <input type="text" class="todo-input" />
+      <button class="todo-button" type="submit">Add</button>
+      <div class="select">
+        <select name="todos" class="filter-todo">
+          <option value="all">All</option>
+          <option value="completed">Completed</option>
+          <option value="uncompleted">Uncompleted</option>
+        </select>
+      </div>
+    </form>
 
-      <h3>Todo</h3>
-
-      <ul id="incomplete-tasks"></ul>
-
-      <h3>Completed</h3>
-      <ul id="completed-tasks"></ul>
+    <div class="todo-container">
+      <ul class="todo-list"></ul>
     </div>
 
     <script src="app.js"></script>

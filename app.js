@@ -1,132 +1,155 @@
-const taskInput = document.querySelector('#new-task');
-const addButton = document.querySelector('#add-button');
-const incompleteTaskHolder = document.querySelector('#incomplete-tasks');
-const completedTaskHolder = document.querySelector('#completed-tasks');
+// Selectors
+const todoInput = document.querySelector('.todo-input');
+const todoButton = document.querySelector('.todo-button');
+const todoList = document.querySelector('.todo-list');
+const filterOption = document.querySelector('.filter-todo');
 
-// New task list item
-const createNewTaskElement = function (taskString) {
-  const listItem = document.createElement('li');
+// Event Listeners
+document.addEventListener('DOMContentLoaded', getTodos);
+todoButton.addEventListener('click', addTodo);
+todoList.addEventListener('click', deleteCheck);
+filterOption.addEventListener('change', filterTodo);
 
-  //input (checkbox)
-  const checkBox = document.createElement('input');
-  // checkbox label
-  const label = document.createElement('label');
-  // input (text)
-  const editInput = document.createElement('input');
-  // button.edit
-  const editButton = document.createElement('button');
-  // button.delete
-  const deleteButton = document.createElement('button');
+// Functions
+function addTodo(event) {
+  // Prevent from from submitting
+  event.preventDefault();
+  // Todo Div
+  const todoDiv = document.createElement('div');
+  todoDiv.classList.add('todo');
+  // Create Li
+  const newTodo = document.createElement('li');
+  newTodo.innerText = todoInput.value;
+  newTodo.classList.add('todo-item');
+  todoDiv.appendChild(newTodo);
+  // Add todo to localStorage
+  saveLocalTodos(todoInput.value);
+  // Check mark button
+  const completedButton = document.createElement('button');
+  completedButton.innerText = `Done`;
+  completedButton.classList.add('complete-btn');
+  todoDiv.appendChild(completedButton);
+  // Trash button
+  const trashButton = document.createElement('button');
+  trashButton.innerText = `Trash`;
+  trashButton.classList.add('trash-btn');
+  todoDiv.appendChild(trashButton);
 
-  label.innerText = taskString;
+  todoList.appendChild(todoDiv);
+  // Clear todo input value
+  todoInput.value = '';
+}
 
-  // appending each element
-  checkBox.type = 'checkbox';
-  editInput.type = 'text';
+function deleteCheck(event) {
+  const item = event.target;
 
-  editButton.innerText = 'Edit';
-  editButton.className = 'edit';
-  deleteButton.innerText = 'Delete';
-  deleteButton.className = 'delete';
-
-  listItem.appendChild(checkBox);
-  listItem.appendChild(label);
-  listItem.appendChild(editInput);
-  listItem.appendChild(editButton);
-  listItem.appendChild(deleteButton);
-
-  return listItem;
-};
-
-const addTask = () => {
-  console.log('Adding task...');
-  //Create a new list item with the text from the #new-task;
-  const listItem = createNewTaskElement(taskInput.value);
-
-  //Append listItem to incompleteTaskHolder
-  incompleteTaskHolder.appendChild(listItem);
-  bindTaskEvents(listItem, taskCompleted);
-
-  taskInput.value = '';
-};
-
-//Edit an existing task
-const editTask = function () {
-  console.log('Editing a task...');
-  console.log("Change 'edit' to 'save'");
-
-  const listItem = this.parentNode;
-
-  const editInput = listItem.querySelector('input[type=text]');
-  const label = listItem.querySelector('label');
-  const containsClass = listItem.classList.contains('editMode');
-
-  if (containsClass) {
-    label.innerText = editInput.value;
-  } else {
-    editInput.value = label.innerText;
+  console.log(item);
+  console.log(item.parentElement);
+  // delete todo
+  if (item.classList.contains('trash-btn')) {
+    console.log('trashed');
+    const todo = item.parentElement;
+    todo.classList.add('fall');
+    removeLocalTodos(todo);
+    todo.addEventListener('transitionend', function () {
+      todo.remove();
+    });
   }
 
-  //toggle .editmode on the parent
-  listItem.classList.toggle('editMode');
-};
-
-//Delete a task
-const deleteTask = function () {
-  console.log('Deliting a task...');
-
-  const listItem = this.parentNode;
-  const ul = listItem.parentNode;
-  //Remove the parent list item from ul.
-  ul.removeChild(listItem);
-};
-
-// Mark task completed
-const taskCompleted = function () {
-  console.log('Compliting task...');
-
-  //Append the task list item to the #completed-taks
-  const listItem = this.parentNode;
-  completedTaskHolder.appendChild(listItem);
-  bindTaskEvents(listItem, taskIncomplete);
-};
-
-const taskIncomplete = function () {
-  console.log('Incompleting task...');
-
-  const listItem = this.parentNode;
-  incompleteTaskHolder.appendChild(listItem);
-  bindTaskEvents(listItem, taskCompleted);
-};
-
-const ajaxRequest = function () {
-  console.log('AJAX request');
-};
-
-//The glue to hold it all together
-// addButton.onclick = addTask;
-addButton.addEventListener('click', addTask);
-addButton.addEventListener('click', ajaxRequest);
-
-const bindTaskEvents = function (taskListItem, checkBoxEventHandler) {
-  console.log('Binding list item events...');
-
-  //select listItems children
-  const checkBox = taskListItem.querySelector('input[type=checkbox]');
-  const editButton = taskListItem.querySelector('button.edit');
-  const deleteButton = taskListItem.querySelector('button.delete');
-
-  editButton.onclick = editTask;
-  deleteButton.onclick = deleteTask;
-  checkBox.onchange = checkBoxEventHandler;
-};
-
-//cycle over incompleteTaskHolder ul list listItems
-for (let i = 0; i < incompleteTaskHolder.children.length; i++) {
-  bindTaskEvents(incompleteTaskHolder.children[i], taskCompleted);
+  if (item.classList.contains('complete-btn')) {
+    console.log('completed');
+    const todo = item.parentElement;
+    todo.classList.toggle('completed');
+    if (todo.classList.contains('completed')) {
+      item.innerText = 'undone';
+    } else {
+      item.innerText = 'done';
+    }
+  }
 }
 
-// cycle over completedTaskHolder ul list items
-for (let i = 0; i < completedTaskHolder.children.length; i++) {
-  bindTaskEvents(completedTaskHolder.children[i], taskIncomplete);
+function filterTodo(event) {
+  const todos = todoList.childNodes;
+  todos.forEach(function (todo) {
+    switch (filterOption.value) {
+      case 'all':
+        todo.style.display = 'flex';
+        break;
+      case 'completed':
+        if (todo.classList.contains('completed')) {
+          todo.style.display = 'flex';
+        } else {
+          todo.style.display = 'none';
+        }
+        break;
+      case 'uncompleted':
+        if (!todo.classList.contains('completed')) {
+          todo.style.display = 'flex';
+        } else {
+          todo.style.display = 'none';
+        }
+        break;
+      default:
+        todo.style.display = 'flex';
+    }
+  });
 }
+// localStorage.clear();
+function saveLocalTodos(todo) {
+  // check for todos
+  let todos;
+  if (localStorage.getItem('todos') === null) {
+    todos = [];
+  } else {
+    todos = JSON.parse(localStorage.getItem('todos'));
+  }
+  todos.push(todo);
+  localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+function getTodos() {
+  let todos;
+  if (localStorage.getItem('todos') === null) {
+    todos = [];
+  } else {
+    todos = JSON.parse(localStorage.getItem('todos'));
+  }
+
+  todos.forEach(function (todo) {
+    const todoDiv = document.createElement('div');
+    todoDiv.classList.add('todo');
+    // Create Li
+    const newTodo = document.createElement('li');
+    newTodo.innerText = todo;
+    newTodo.classList.add('todo-item');
+    todoDiv.appendChild(newTodo);
+
+    // Check mark button
+    const completedButton = document.createElement('button');
+    completedButton.innerText = `Done`;
+    completedButton.classList.add('complete-btn');
+    todoDiv.appendChild(completedButton);
+    // Trash button
+    const trashButton = document.createElement('button');
+    trashButton.innerText = `Trash`;
+    trashButton.classList.add('trash-btn');
+    todoDiv.appendChild(trashButton);
+
+    todoList.appendChild(todoDiv);
+  });
+}
+
+function removeLocalTodos(todo) {
+  let todos;
+  if (localStorage.getItem('todos') === null) {
+    todos = [];
+  } else {
+    todos = JSON.parse(localStorage.getItem('todos'));
+  }
+  const todoIndex = todo.children[0].innerText;
+  todos.splice(todos.indexOf(todoIndex), 1);
+  localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+// todo for dev
+// store "done" state from todo items when storing and getting from local storage

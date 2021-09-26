@@ -6,7 +6,7 @@ A Vanilla JS ToDo list app.
 
 - [x] Add a README.md to repository.
 - [x] Add markup and style.
-- [ ] User can enter a todo item and add it to a list.
-- [ ] User can check an item off to mark it as done.
-- [ ] Data will persist even when user refreshes the page.
-- [ ] User can delete a todo list item.
+- [x] User can enter a todo item and add it to a list.
+- [x] User can check an item off to mark it as done.
+- [x] Data will persist even when user refreshes the page.
+- [x] User can delete a todo list item.
