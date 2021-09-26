@@ -10,3 +10,4 @@ A Vanilla JS ToDo list app.
 - [x] User can check an item off to mark it as done.
 - [x] Data will persist even when user refreshes the page.
 - [x] User can delete a todo list item.
+- [ ] Todo time "done" state persists with localStorage.
