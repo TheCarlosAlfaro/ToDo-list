@@ -1,6 +1,7 @@
 const todoInputEl = document.querySelector('.todo-input');
 const addTodoButtonEl = document.querySelector('.add-todo-button');
 const todoListContainer = document.querySelector('.todo-list');
+const filterOption = document.querySelector('.filter-todo');
 
 // generate ID function
 makeId = () => {
@@ -66,7 +67,7 @@ const removeTodo = (todo) => {
   const todoId = todo.dataset.key;
 
   if (localStorage.getItem('localTodos') === null) {
-    localTodos = [];
+    return;
   } else {
     localTodos = JSON.parse(localStorage.getItem('localTodos'));
   }
@@ -80,7 +81,7 @@ const changeStatus = (todo, isDone) => {
   const todoId = todo.dataset.key;
 
   if (localStorage.getItem('localTodos') === null) {
-    localTodos = [];
+    return;
   } else {
     localTodos = JSON.parse(localStorage.getItem('localTodos'));
   }
@@ -113,12 +114,46 @@ const actionCheck = (event) => {
       button.innerText = 'Completed';
       changeStatus(todo, true);
     } else {
-      button.innerText = 'done';
+      button.innerText = 'Done';
       changeStatus(todo, false);
     }
   }
 };
+
+function filterTodo(event) {
+  if (localStorage.getItem('localTodos') === null) {
+    return;
+  } else {
+    localTodos = JSON.parse(localStorage.getItem('localTodos'));
+  }
+  const todos = todoListContainer.childNodes;
+  todos.forEach(function (todo) {
+    switch (filterOption.value) {
+      case 'all':
+        todo.style.display = 'flex';
+        break;
+      case 'completed':
+        if (todo.classList.contains('completed')) {
+          todo.style.display = 'flex';
+        } else {
+          todo.style.display = 'none';
+        }
+        break;
+      case 'uncompleted':
+        if (!todo.classList.contains('completed')) {
+          todo.style.display = 'flex';
+        } else {
+          todo.style.display = 'none';
+        }
+        break;
+      default:
+        todo.style.display = 'flex';
+    }
+  });
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', renderTodoList);
 addTodoButtonEl.addEventListener('click', addTask);
 todoListContainer.addEventListener('click', actionCheck);
+filterOption.addEventListener('change', filterTodo);
