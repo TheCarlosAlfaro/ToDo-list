@@ -21,11 +21,13 @@ const renderTodoList = () => {
   }
   let todoListEl = localTodos
     .map((task) => {
-      return `<div class="todo">
-    <li class="todo-item" data-key='${task.id}'>
+      return `<div class="todo ${task.done ? 'completed' : ''}" data-key='${
+        task.id
+      }'>
+    <li class="todo-item">
     ${task.task}
     </li>
-    <button class="complete-btn">Add</button>
+    <button class="complete-btn">${task.done ? 'Completed' : 'Done'}</button>
     <button class="delete-btn">Delete</button>
     </div>`;
     })
@@ -38,7 +40,6 @@ const renderTodoList = () => {
 const saveTask = (newTask) => {
   if (localStorage.getItem('localTodos') === null) {
     localTodos = [];
-    console.log('checking if exists');
   } else {
     localTodos = JSON.parse(localStorage.getItem('localTodos'));
   }
@@ -60,6 +61,64 @@ const addTask = (event) => {
   saveTask(newTask);
   todoInputEl.value = '';
 };
+
+const removeTodo = (todo) => {
+  const todoId = todo.dataset.key;
+
+  if (localStorage.getItem('localTodos') === null) {
+    localTodos = [];
+  } else {
+    localTodos = JSON.parse(localStorage.getItem('localTodos'));
+  }
+  const todoIndex = localTodos.findIndex((task) => task.id === todoId);
+
+  localTodos.splice(todoIndex, 1);
+  localStorage.setItem('localTodos', JSON.stringify(localTodos));
+};
+
+const changeStatus = (todo, isDone) => {
+  const todoId = todo.dataset.key;
+
+  if (localStorage.getItem('localTodos') === null) {
+    localTodos = [];
+  } else {
+    localTodos = JSON.parse(localStorage.getItem('localTodos'));
+  }
+  const todoIndex = localTodos.findIndex((task) => task.id === todoId);
+  localTodos[todoIndex].done = isDone;
+  console.log(localTodos);
+  console.log(localTodos[todoIndex]);
+  localStorage.setItem('localTodos', JSON.stringify(localTodos));
+};
+
+const actionCheck = (event) => {
+  const button = event.target;
+
+  // delete todo
+  if (button.classList.contains('delete-btn')) {
+    const todo = button.parentElement;
+
+    todo.classList.add('fall');
+
+    removeTodo(todo);
+    todo.addEventListener('transitionend', function () {
+      todo.remove();
+    });
+  }
+
+  if (button.classList.contains('complete-btn')) {
+    const todo = button.parentElement;
+    todo.classList.toggle('completed');
+    if (todo.classList.contains('completed')) {
+      button.innerText = 'Completed';
+      changeStatus(todo, true);
+    } else {
+      button.innerText = 'done';
+      changeStatus(todo, false);
+    }
+  }
+};
 // Event Listeners
 document.addEventListener('DOMContentLoaded', renderTodoList);
 addTodoButtonEl.addEventListener('click', addTask);
+todoListContainer.addEventListener('click', actionCheck);
