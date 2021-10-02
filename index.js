@@ -2,7 +2,7 @@ const todoInputEl = document.querySelector('.todo-input');
 const addTodoButtonEl = document.querySelector('.add-todo-button');
 const todoListContainer = document.querySelector('.todo-list');
 
-// Create id generaton function
+// generate ID function
 makeId = () => {
   let ID = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -12,7 +12,7 @@ makeId = () => {
   return ID;
 };
 
-// Render todo function
+// Render todo list
 const renderTodoList = () => {
   if (localStorage.getItem('localTodos') === null) {
     return;
@@ -22,7 +22,7 @@ const renderTodoList = () => {
   let todoListEl = localTodos
     .map((task) => {
       return `<div class="todo">
-    <li class="todo-item">
+    <li class="todo-item" data-key='${task.id}'>
     ${task.task}
     </li>
     <button class="complete-btn">Add</button>
@@ -34,7 +34,8 @@ const renderTodoList = () => {
   todoListContainer.innerHTML = todoListEl;
 };
 
-const saveTodoToLocal = (newTask) => {
+// save todo
+const saveTask = (newTask) => {
   if (localStorage.getItem('localTodos') === null) {
     localTodos = [];
     console.log('checking if exists');
@@ -56,7 +57,7 @@ const addTask = (event) => {
     done: false,
   };
   // save to localStorage
-  saveTodoToLocal(newTask);
+  saveTask(newTask);
   todoInputEl.value = '';
 };
 // Event Listeners
