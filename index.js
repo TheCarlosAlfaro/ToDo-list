@@ -31,21 +31,6 @@ makeId = () => {
   return ID;
 };
 
-// Add new task
-const addTask = (task) => {
-  const newTask = {
-    id: makeId(),
-    task,
-    done: false,
-  };
-
-  todoList.push(newTask);
-};
-
-// adding more tasks
-addTask('Drink more coffee');
-addTask('be great');
-
 // Render todo function
 const renderTodoList = (todoList) => {
   let todoListEl = todoList
@@ -62,4 +47,24 @@ const renderTodoList = (todoList) => {
 
   todoListContainer.innerHTML = todoListEl;
 };
+
 renderTodoList(todoList);
+
+// Add new task
+const addTask = (event) => {
+  event.preventDefault();
+
+  const newTask = {
+    id: makeId(),
+    task: todoInputEl.value,
+    done: false,
+  };
+
+  todoList.push(newTask);
+  console.log(todoList);
+
+  todoInputEl.value = '';
+  renderTodoList(todoList);
+};
+// Event Listeners
+addTodoButtonEl.addEventListener('click', addTask);
