@@ -3,8 +3,7 @@ const addTodoButtonEl = document.querySelector('.add-todo-button');
 const todoListContainer = document.querySelector('.todo-list');
 const filterOption = document.querySelector('.filter-todo');
 
-// generate ID function
-makeId = () => {
+const makeId = () => {
   let ID = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   for (var i = 0; i < 12; i++) {
@@ -13,7 +12,6 @@ makeId = () => {
   return ID;
 };
 
-// Render todo list
 const renderTodoList = () => {
   if (localStorage.getItem('localTodos') === null) {
     return;
@@ -37,7 +35,6 @@ const renderTodoList = () => {
   todoListContainer.innerHTML = todoListEl;
 };
 
-// save todo
 const saveTask = (newTask) => {
   if (localStorage.getItem('localTodos') === null) {
     localTodos = [];
@@ -49,7 +46,6 @@ const saveTask = (newTask) => {
   renderTodoList(localTodos);
 };
 
-// Add new task
 const addTask = (event) => {
   event.preventDefault();
 
@@ -58,7 +54,7 @@ const addTask = (event) => {
     task: todoInputEl.value,
     done: false,
   };
-  // save to localStorage
+
   saveTask(newTask);
   todoInputEl.value = '';
 };
@@ -87,15 +83,13 @@ const changeStatus = (todo, isDone) => {
   }
   const todoIndex = localTodos.findIndex((task) => task.id === todoId);
   localTodos[todoIndex].done = isDone;
-  console.log(localTodos);
-  console.log(localTodos[todoIndex]);
+
   localStorage.setItem('localTodos', JSON.stringify(localTodos));
 };
 
 const actionCheck = (event) => {
   const button = event.target;
 
-  // delete todo
   if (button.classList.contains('delete-btn')) {
     const todo = button.parentElement;
 
@@ -152,7 +146,6 @@ function filterTodo(event) {
   });
 }
 
-// Event Listeners
 document.addEventListener('DOMContentLoaded', renderTodoList);
 addTodoButtonEl.addEventListener('click', addTask);
 todoListContainer.addEventListener('click', actionCheck);
