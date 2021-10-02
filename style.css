@@ -69,7 +69,7 @@ form button:hover {
   flex: 1;
 }
 
-.trash-btn,
+.delete-btn,
 .complete-btn {
   color: #fafafa;
   border: none;
@@ -82,7 +82,7 @@ form button:hover {
   background: #0cf574;
 }
 
-.trash-btn {
+.delete-btn {
   background: #f26419;
 }
 
