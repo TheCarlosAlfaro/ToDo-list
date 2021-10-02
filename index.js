@@ -151,5 +151,21 @@ todoButton.addEventListener('click', addTodo);
 todoList.addEventListener('click', deleteCheck);
 filterOption.addEventListener('change', filterTodo);
 
-// todo for dev
-// store "done" state from todo items when storing and getting from local storage
+// Create data model for todos
+const todos = [
+  {
+    id: '232123',
+    task: 'do somehting',
+    done: false,
+  },
+];
+
+// Create id generaton function
+makeId = () => {
+  let ID = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  for (var i = 0; i < 12; i++) {
+    ID += characters.charAt(Math.floor(Math.random() * 36));
+  }
+  return ID;
+};
