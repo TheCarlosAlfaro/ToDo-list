@@ -2,25 +2,6 @@ const todoInputEl = document.querySelector('.todo-input');
 const addTodoButtonEl = document.querySelector('.add-todo-button');
 const todoListContainer = document.querySelector('.todo-list');
 
-// Dummy todo list
-const todoList = [
-  {
-    id: 'helooid234',
-    task: 'Practice Dj skills',
-    done: false,
-  },
-  {
-    id: 'heasdid234',
-    task: 'Program for a better life, have fun!',
-    done: false,
-  },
-  {
-    id: 'hdallooid2ds4',
-    task: 'Do not forget to go for a walk',
-    done: false,
-  },
-];
-
 // Create id generaton function
 makeId = () => {
   let ID = '';
@@ -32,8 +13,13 @@ makeId = () => {
 };
 
 // Render todo function
-const renderTodoList = (todoList) => {
-  let todoListEl = todoList
+const renderTodoList = () => {
+  if (localStorage.getItem('localTodos') === null) {
+    return;
+  } else {
+    localTodos = JSON.parse(localStorage.getItem('localTodos'));
+  }
+  let todoListEl = localTodos
     .map((task) => {
       return `<div class="todo">
     <li class="todo-item">
@@ -48,7 +34,17 @@ const renderTodoList = (todoList) => {
   todoListContainer.innerHTML = todoListEl;
 };
 
-renderTodoList(todoList);
+const saveTodoToLocal = (newTask) => {
+  if (localStorage.getItem('localTodos') === null) {
+    localTodos = [];
+    console.log('checking if exists');
+  } else {
+    localTodos = JSON.parse(localStorage.getItem('localTodos'));
+  }
+  localTodos.push(newTask);
+  localStorage.setItem('localTodos', JSON.stringify(localTodos));
+  renderTodoList(localTodos);
+};
 
 // Add new task
 const addTask = (event) => {
@@ -59,12 +55,10 @@ const addTask = (event) => {
     task: todoInputEl.value,
     done: false,
   };
-
-  todoList.push(newTask);
-  console.log(todoList);
-
+  // save to localStorage
+  saveTodoToLocal(newTask);
   todoInputEl.value = '';
-  renderTodoList(todoList);
 };
 // Event Listeners
+document.addEventListener('DOMContentLoaded', renderTodoList);
 addTodoButtonEl.addEventListener('click', addTask);
