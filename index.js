@@ -6,18 +6,20 @@ const filterOption = document.querySelector('.filter-todo');
 const makeId = () => {
   let ID = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  for (var i = 0; i < 12; i++) {
+  for (let i = 0; i < 12; i++) {
     ID += characters.charAt(Math.floor(Math.random() * 36));
   }
   return ID;
 };
 
+const getLocalTodos = () => {
+  return localStorage.getItem('localTodos')
+    ? JSON.parse(localStorage.getItem('localTodos'))
+    : [];
+};
+
 const renderTodoList = () => {
-  if (localStorage.getItem('localTodos') === null) {
-    return;
-  } else {
-    localTodos = JSON.parse(localStorage.getItem('localTodos'));
-  }
+  let localTodos = getLocalTodos();
   let todoListEl = localTodos
     .map((task) => {
       return `<div class="todo ${task.done ? 'completed' : ''}" data-key='${
@@ -36,11 +38,7 @@ const renderTodoList = () => {
 };
 
 const saveTask = (newTask) => {
-  if (localStorage.getItem('localTodos') === null) {
-    localTodos = [];
-  } else {
-    localTodos = JSON.parse(localStorage.getItem('localTodos'));
-  }
+  let localTodos = getLocalTodos();
   localTodos.push(newTask);
   localStorage.setItem('localTodos', JSON.stringify(localTodos));
   renderTodoList(localTodos);
@@ -62,11 +60,7 @@ const addTask = (event) => {
 const removeTodo = (todo) => {
   const todoId = todo.dataset.key;
 
-  if (localStorage.getItem('localTodos') === null) {
-    return;
-  } else {
-    localTodos = JSON.parse(localStorage.getItem('localTodos'));
-  }
+  let localTodos = getLocalTodos();
   const todoIndex = localTodos.findIndex((task) => task.id === todoId);
 
   localTodos.splice(todoIndex, 1);
@@ -76,11 +70,7 @@ const removeTodo = (todo) => {
 const changeStatus = (todo, isDone) => {
   const todoId = todo.dataset.key;
 
-  if (localStorage.getItem('localTodos') === null) {
-    return;
-  } else {
-    localTodos = JSON.parse(localStorage.getItem('localTodos'));
-  }
+  let localTodos = getLocalTodos();
   const todoIndex = localTodos.findIndex((task) => task.id === todoId);
   localTodos[todoIndex].done = isDone;
 
@@ -115,11 +105,6 @@ const actionCheck = (event) => {
 };
 
 function filterTodo(event) {
-  if (localStorage.getItem('localTodos') === null) {
-    return;
-  } else {
-    localTodos = JSON.parse(localStorage.getItem('localTodos'));
-  }
   const todos = todoListContainer.childNodes;
   todos.forEach(function (todo) {
     switch (filterOption.value) {
