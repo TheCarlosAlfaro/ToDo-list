@@ -64,11 +64,16 @@ const addTask = (event) => {
   todoInput.value = '';
 };
 
+const findTaskIndex = (localTodos, todoId) => {
+  return localTodos.findIndex((task) => task.id === todoId);
+};
+
 const removeTask = (todo) => {
   const todoId = todo.dataset.key;
 
   let localTodos = getLocalTodos();
-  const todoIndex = localTodos.findIndex((task) => task.id === todoId);
+
+  const todoIndex = findTaskIndex(localTodos, todoId);
 
   localTodos.splice(todoIndex, 1);
 
@@ -79,7 +84,7 @@ const changeTaskStatus = (todo, isisDone) => {
   const todoId = todo.dataset.key;
 
   let localTodos = getLocalTodos();
-  const todoIndex = localTodos.findIndex((task) => task.id === todoId);
+  const todoIndex = findTaskIndex(localTodos, todoId);
   localTodos[todoIndex].isDone = isisDone;
 
   updateLocalTodos(localTodos);
