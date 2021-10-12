@@ -1,6 +1,6 @@
-const todoInputEl = document.querySelector('.todo-input');
-const addTodoButtonEl = document.querySelector('.add-todo-button');
-const todoListContainer = document.querySelector('.todo-list');
+const todoInput = document.querySelector('.todo-input');
+const addTodoButton = document.querySelector('.add-todo-button');
+const todosContainer = document.querySelector('.todo-list');
 const filterOption = document.querySelector('.filter-todo');
 
 const generateId = () => {
@@ -40,12 +40,12 @@ const renderTodos = () => {
     })
     .join('');
 
-  todoListContainer.innerHTML = todosMarkup;
+  todosContainer.innerHTML = todosMarkup;
 };
 
-const saveTask = (newTask) => {
+const saveTask = (task) => {
   let localTodos = getLocalTodos();
-  localTodos.push(newTask);
+  localTodos.push(task);
 
   updateLocalTodos(localTodos);
   renderTodos(localTodos);
@@ -54,17 +54,17 @@ const saveTask = (newTask) => {
 const addTask = (event) => {
   event.preventDefault();
 
-  const newTask = {
+  const task = {
     id: generateId(),
-    task: todoInputEl.value,
+    task: todoInput.value,
     isDone: false,
   };
 
-  saveTask(newTask);
-  todoInputEl.value = '';
+  saveTask(task);
+  todoInput.value = '';
 };
 
-const removeTodo = (todo) => {
+const removeTask = (todo) => {
   const todoId = todo.dataset.key;
 
   let localTodos = getLocalTodos();
@@ -75,7 +75,7 @@ const removeTodo = (todo) => {
   updateLocalTodos(localTodos);
 };
 
-const changeStatus = (todo, isisDone) => {
+const changeTaskStatus = (todo, isisDone) => {
   const todoId = todo.dataset.key;
 
   let localTodos = getLocalTodos();
@@ -93,7 +93,7 @@ const actionCheck = (event) => {
 
     todo.classList.add('fall');
 
-    removeTodo(todo);
+    removeTask(todo);
     todo.addEventListener('transitionend', function () {
       todo.remove();
     });
@@ -104,16 +104,16 @@ const actionCheck = (event) => {
     todo.classList.toggle('completed');
     if (todo.classList.contains('completed')) {
       button.innerText = 'Completed';
-      changeStatus(todo, true);
+      changeTaskStatus(todo, true);
     } else {
       button.innerText = 'isDone';
-      changeStatus(todo, false);
+      changeTaskStatus(todo, false);
     }
   }
 };
 
 function filterTodo() {
-  const todos = todoListContainer.childNodes;
+  const todos = todosContainer.childNodes;
   todos.forEach(function (todo) {
     switch (filterOption.value) {
       case 'all':
@@ -140,6 +140,6 @@ function filterTodo() {
 }
 
 document.addEventListener('DOMContentLoaded', renderTodos);
-addTodoButtonEl.addEventListener('click', addTask);
-todoListContainer.addEventListener('click', actionCheck);
+addTodoButton.addEventListener('click', addTask);
+todosContainer.addEventListener('click', actionCheck);
 filterOption.addEventListener('change', filterTodo);
