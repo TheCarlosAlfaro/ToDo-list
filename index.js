@@ -3,7 +3,7 @@ const addTodoButtonEl = document.querySelector('.add-todo-button');
 const todoListContainer = document.querySelector('.todo-list');
 const filterOption = document.querySelector('.filter-todo');
 
-const makeId = () => {
+const generateId = () => {
   let ID = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   for (let i = 0; i < 12; i++) {
@@ -18,39 +18,46 @@ const getLocalTodos = () => {
     : [];
 };
 
-const renderTodoList = () => {
+const updateLocalTodos = (localTodos) => {
+  localStorage.setItem('localTodos', JSON.stringify(localTodos));
+};
+
+const renderTodos = () => {
   let localTodos = getLocalTodos();
-  let todoListEl = localTodos
+  let todosMarkup = localTodos
     .map((task) => {
-      return `<div class="todo ${task.done ? 'completed' : ''}" data-key='${
+      return `<div class="todo ${task.isDone ? 'completed' : ''}" data-key='${
         task.id
       }'>
     <li class="todo-item">
     ${task.task}
     </li>
-    <button class="complete-btn">${task.done ? 'Completed' : 'Done'}</button>
+    <button class="complete-btn">${
+      task.isDone ? 'Completed' : 'isDone'
+    }</button>
     <button class="delete-btn">Delete</button>
     </div>`;
     })
     .join('');
 
-  todoListContainer.innerHTML = todoListEl;
+  todoListContainer.innerHTML = todosMarkup;
 };
 
 const saveTask = (newTask) => {
   let localTodos = getLocalTodos();
   localTodos.push(newTask);
-  localStorage.setItem('localTodos', JSON.stringify(localTodos));
-  renderTodoList(localTodos);
+
+  updateLocalTodos(localTodos);
+  renderTodos(localTodos);
 };
 
 const addTask = (event) => {
   event.preventDefault();
 
   const newTask = {
-    id: makeId(),
+    id: generateId(),
     task: todoInputEl.value,
-    done: false,
+    isDone: false,
   };
 
   saveTask(newTask);
@@ -64,17 +71,18 @@ const removeTodo = (todo) => {
   const todoIndex = localTodos.findIndex((task) => task.id === todoId);
 
   localTodos.splice(todoIndex, 1);
-  localStorage.setItem('localTodos', JSON.stringify(localTodos));
+
+  updateLocalTodos(localTodos);
 };
 
-const changeStatus = (todo, isDone) => {
+const changeStatus = (todo, isisDone) => {
   const todoId = todo.dataset.key;
 
   let localTodos = getLocalTodos();
   const todoIndex = localTodos.findIndex((task) => task.id === todoId);
-  localTodos[todoIndex].done = isDone;
+  localTodos[todoIndex].isDone = isisDone;
 
-  localStorage.setItem('localTodos', JSON.stringify(localTodos));
+  updateLocalTodos(localTodos);
 };
 
 const actionCheck = (event) => {
@@ -98,13 +106,13 @@ const actionCheck = (event) => {
       button.innerText = 'Completed';
       changeStatus(todo, true);
     } else {
-      button.innerText = 'Done';
+      button.innerText = 'isDone';
       changeStatus(todo, false);
     }
   }
 };
 
-function filterTodo(event) {
+function filterTodo() {
   const todos = todoListContainer.childNodes;
   todos.forEach(function (todo) {
     switch (filterOption.value) {
@@ -131,7 +139,7 @@ function filterTodo(event) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', renderTodoList);
+document.addEventListener('DOMContentLoaded', renderTodos);
 addTodoButtonEl.addEventListener('click', addTask);
 todoListContainer.addEventListener('click', actionCheck);
 filterOption.addEventListener('change', filterTodo);
