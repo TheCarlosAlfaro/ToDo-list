@@ -32,9 +32,7 @@ const renderTodos = () => {
     <li class="todo-item">
     ${task.task}
     </li>
-    <button class="complete-btn">${
-      task.isDone ? 'Completed' : 'isDone'
-    }</button>
+    <button class="complete-btn">${task.isDone ? 'Completed' : 'Done'}</button>
     <button class="delete-btn">Delete</button>
     </div>`;
     })
@@ -69,54 +67,57 @@ const findTaskIndex = (localTodos, todoId) => {
 };
 
 const removeTask = (todo) => {
+  todo.classList.add('fall');
   const todoId = todo.dataset.key;
 
-  let localTodos = getLocalTodos();
+  const localTodos = getLocalTodos();
 
   const todoIndex = findTaskIndex(localTodos, todoId);
 
   localTodos.splice(todoIndex, 1);
 
   updateLocalTodos(localTodos);
+
+  todo.addEventListener('transitionend', function () {
+    todo.remove();
+  });
 };
 
-const changeTaskStatus = (todo, isisDone) => {
+const checkCompletedStatus = (button, todo) => {
+  todo.classList.toggle('completed');
+  if (todo.classList.contains('completed')) {
+    button.innerText = 'Completed';
+    changeTaskStatus(todo, true);
+  } else {
+    button.innerText = 'Done';
+    changeTaskStatus(todo, false);
+  }
+};
+
+const changeTaskStatus = (todo, isDone) => {
   const todoId = todo.dataset.key;
 
   let localTodos = getLocalTodos();
   const todoIndex = findTaskIndex(localTodos, todoId);
-  localTodos[todoIndex].isDone = isisDone;
+  localTodos[todoIndex].isDone = isDone;
 
   updateLocalTodos(localTodos);
 };
 
-const actionCheck = (event) => {
+const buttonActionCheck = (event) => {
   const button = event.target;
+  const todo = button.parentElement;
 
   if (button.classList.contains('delete-btn')) {
-    const todo = button.parentElement;
-
-    todo.classList.add('fall');
-
     removeTask(todo);
-    todo.addEventListener('transitionend', function () {
-      todo.remove();
-    });
   }
 
   if (button.classList.contains('complete-btn')) {
-    const todo = button.parentElement;
-    todo.classList.toggle('completed');
-    if (todo.classList.contains('completed')) {
-      button.innerText = 'Completed';
-      changeTaskStatus(todo, true);
-    } else {
-      button.innerText = 'isDone';
-      changeTaskStatus(todo, false);
-    }
+    checkCompletedStatus(button, todo);
   }
 };
 
+// Refactor filterTodo, to a cleaner smaller function
 function filterTodo() {
   const todos = todosContainer.childNodes;
   todos.forEach(function (todo) {
@@ -146,5 +147,5 @@ function filterTodo() {
 
 document.addEventListener('DOMContentLoaded', renderTodos);
 addTodoButton.addEventListener('click', addTask);
-todosContainer.addEventListener('click', actionCheck);
+todosContainer.addEventListener('click', buttonActionCheck);
 filterOption.addEventListener('change', filterTodo);
