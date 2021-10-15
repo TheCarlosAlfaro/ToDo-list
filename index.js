@@ -49,7 +49,7 @@ const saveTask = (task) => {
   renderTodos(localTodos);
 };
 
-const addTask = (event) => {
+const createNewTask = (event) => {
   event.preventDefault();
 
   const task = {
@@ -146,6 +146,6 @@ function filterTodo() {
 }
 
 document.addEventListener('DOMContentLoaded', renderTodos);
-addTodoButton.addEventListener('click', addTask);
+addTodoButton.addEventListener('click', createNewTask);
 todosContainer.addEventListener('click', buttonActionCheck);
 filterOption.addEventListener('change', filterTodo);
