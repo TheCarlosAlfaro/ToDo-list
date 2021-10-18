@@ -8,32 +8,14 @@ import {
   getLocalTodos,
   updateLocalTodos,
 } from './utils/localStorageModules.js';
-
-const renderTodos = () => {
-  let localTodos = getLocalTodos();
-  let todosMarkup = localTodos
-    .map((task) => {
-      return `<div class="todo ${task.isDone ? 'completed' : ''}" data-key='${
-        task.id
-      }'>
-    <li class="todo-item">
-    ${task.task}
-    </li>
-    <button class="complete-btn">${task.isDone ? 'Completed' : 'Done'}</button>
-    <button class="delete-btn">Delete</button>
-    </div>`;
-    })
-    .join('');
-
-  todosContainer.innerHTML = todosMarkup;
-};
+import renderTodos from './utils/renderTodos.js';
 
 const saveTask = (task) => {
   let localTodos = getLocalTodos();
   localTodos.push(task);
 
   updateLocalTodos(localTodos);
-  renderTodos(localTodos);
+  renderTodos(todosContainer);
 };
 
 const createNewTask = (event) => {
@@ -129,7 +111,7 @@ function filterTodo() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', renderTodos);
+document.addEventListener('DOMContentLoaded', renderTodos(todosContainer));
 addTodoButton.addEventListener('click', createNewTask);
 todosContainer.addEventListener('click', buttonActionCheck);
 filterOption.addEventListener('change', filterTodo);
