@@ -1,14 +1,14 @@
-const todoInput = document.querySelector('.todo-input');
-const addTodoButton = document.querySelector('.add-todo-button');
-const todosContainer = document.querySelector('.todo-list');
-const filterOption = document.querySelector('.filter-todo');
-
 import {
   getLocalTodos,
   updateLocalTodos,
 } from './utils/localStorageModules.js';
 import renderTodos from './utils/renderTodos.js';
 import createNewTask from './utils/createNewTask.js';
+
+const todoInput = document.querySelector('.todo-input');
+const addTodoButton = document.querySelector('.add-todo-button');
+const todosContainer = document.querySelector('.todo-list');
+const filterOption = document.querySelector('.filter-todo');
 
 const findTaskIndex = (localTodos, todoId) => {
   return localTodos.findIndex((task) => task.id === todoId);
