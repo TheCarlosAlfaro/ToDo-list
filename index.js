@@ -3,26 +3,12 @@ const addTodoButton = document.querySelector('.add-todo-button');
 const todosContainer = document.querySelector('.todo-list');
 const filterOption = document.querySelector('.filter-todo');
 
-import generateId from './utils/generateId.js';
 import {
   getLocalTodos,
   updateLocalTodos,
 } from './utils/localStorageModules.js';
 import renderTodos from './utils/renderTodos.js';
-import saveTask from './utils/saveTask.js';
-
-const createNewTask = (event) => {
-  event.preventDefault();
-
-  const task = {
-    id: generateId(),
-    task: todoInput.value,
-    isDone: false,
-  };
-
-  saveTask(task, todosContainer);
-  todoInput.value = '';
-};
+import createNewTask from './utils/createNewTask.js';
 
 const findTaskIndex = (localTodos, todoId) => {
   return localTodos.findIndex((task) => task.id === todoId);
@@ -105,6 +91,9 @@ function filterTodo() {
 }
 
 document.addEventListener('DOMContentLoaded', renderTodos(todosContainer));
-addTodoButton.addEventListener('click', createNewTask);
+addTodoButton.addEventListener(
+  'click',
+  createNewTask(todoInput, todosContainer)
+);
 todosContainer.addEventListener('click', buttonActionCheck);
 filterOption.addEventListener('change', filterTodo);
