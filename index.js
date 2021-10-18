@@ -9,14 +9,7 @@ import {
   updateLocalTodos,
 } from './utils/localStorageModules.js';
 import renderTodos from './utils/renderTodos.js';
-
-const saveTask = (task) => {
-  let localTodos = getLocalTodos();
-  localTodos.push(task);
-
-  updateLocalTodos(localTodos);
-  renderTodos(todosContainer);
-};
+import saveTask from './utils/saveTask.js';
 
 const createNewTask = (event) => {
   event.preventDefault();
@@ -27,7 +20,7 @@ const createNewTask = (event) => {
     isDone: false,
   };
 
-  saveTask(task);
+  saveTask(task, todosContainer);
   todoInput.value = '';
 };
 
