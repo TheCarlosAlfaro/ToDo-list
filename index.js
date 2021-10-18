@@ -3,24 +3,11 @@ const addTodoButton = document.querySelector('.add-todo-button');
 const todosContainer = document.querySelector('.todo-list');
 const filterOption = document.querySelector('.filter-todo');
 
-const generateId = () => {
-  let ID = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  for (let i = 0; i < 12; i++) {
-    ID += characters.charAt(Math.floor(Math.random() * 36));
-  }
-  return ID;
-};
-
-const getLocalTodos = () => {
-  return localStorage.getItem('localTodos')
-    ? JSON.parse(localStorage.getItem('localTodos'))
-    : [];
-};
-
-const updateLocalTodos = (localTodos) => {
-  localStorage.setItem('localTodos', JSON.stringify(localTodos));
-};
+import generateId from './utils/generateId.js';
+import {
+  getLocalTodos,
+  updateLocalTodos,
+} from './utils/localStorageModules.js';
 
 const renderTodos = () => {
   let localTodos = getLocalTodos();
@@ -126,18 +113,15 @@ function filterTodo() {
         todo.style.display = 'flex';
         break;
       case 'completed':
-        if (todo.classList.contains('completed')) {
-          todo.style.display = 'flex';
-        } else {
-          todo.style.display = 'none';
-        }
+        todo.classList.contains('completed')
+          ? (todo.style.display = 'flex')
+          : (todo.style.display = 'none');
+
         break;
       case 'uncompleted':
-        if (!todo.classList.contains('completed')) {
-          todo.style.display = 'flex';
-        } else {
-          todo.style.display = 'none';
-        }
+        !todo.classList.contains('completed')
+          ? (todo.style.display = 'flex')
+          : (todo.style.display = 'none');
         break;
       default:
         todo.style.display = 'flex';
